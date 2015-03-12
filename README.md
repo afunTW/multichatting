@@ -1,2 +1,2 @@
 # simpleRTP
-implement reliable transprot protocol
+implement reliable transprot protocol in python3
