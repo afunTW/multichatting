@@ -1,38 +1,51 @@
 #!/usr/bin/python3
 
-"""
-	1. Blocking(NOW) > Non-blocking
-	2. Single thread(NOW) > Multiple thread
-"""
+import time
+import socket
+#from tcpSocket import *
 
-import socket;
-
-class tcpSocket:
+if __name__ == '__main__':
 	"""
-		1. Initialize
-		2. Connection
+		As a server
+		1. create socket(init)
+		2. bind adddress
+		3. listen on port
+		4. send/ recv message
+		5. shutdown
+		6. close
 	"""
+	hopCount = 5;
 
-	def __init__(this, sock = None):
-		if sock is None: this.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-		else this.sock = sock;
+	# get local machine host and port
+	host = socket.gethostname();
+	port = 9999;
 
-	def connect(this, host, port):
-		this.sock.connect((host, port));
+	serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+	print('Socket create.');
+	serversocket.bind((host, port));
+	print('Socket binding');
+	serversocket.listen(hopCount);
+	print('Socket listen: ', hopCount, ' hop')
 
-	def send(this, msg):
-		total = 0;
-		while total < MSGLEN:
-			sent = this.sock.send(msg[total,]);
-			if sent == 0: raise RuntimeError("socket connection broken");
-			total += sent;
+	while True:
+		clientsocket, address = serversocket.accept();
+		print('Got a connection from ', str(address));
 
-	def rcv(this):
-		segment = [];
-		bytes_recd = 0;
-		while bytes_recd < MSGLEN:
-			chunk = this.sock.recv(min(MSGLEN - bytes_recd, 2048));
-			if chunk == b'': raise RuntimeError("socket connection broken");
-			segment.append(chunk);
-			bytes_recd += len(chunk);
-		return b''.join(segment);
+		currentTime = time.ctime(time.time()) + "\r\n";
+		clientsocket.send(currentTime.encode('ascii'));
+		clientsocket.close();
+		print('Socket close');
+		break;
+
+	# serversocket = tcpSocket();
+	# serversocket.bind(host, port);
+	# serversocket.listen(5);
+
+	# clientsocket, address = serversocket.sock.accept();	# return pair value (connection, addr)
+	# print('Got a connection from %s', str(address))
+
+	# while True:
+	# 	currentTime = time.ctime(time.time()) + "\r\n";
+	# 	clientsocket.mysend(currentTime.encode('ascii'));
+
+	# 	time.sleep(1);	# Sleep 1 sec.
