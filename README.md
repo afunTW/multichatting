@@ -12,4 +12,5 @@ implement multiple client and non-blocking chat room
 * Multiple client
 * Close connection until no more readable connection
 * Server only handle broadcast and connection
+
 > BUG: when another client try to connect to server, the first client will disconnect
