@@ -18,11 +18,11 @@ HOST = '';
 PORT = 9009;
 
 def broadcast(serversocket, sock, msg):
-	# print('Broadcasting, msg: ', msg);
+	print(SOCKET_LIST);
 	for so in SOCKET_LIST:
 		# send msg to peer only
 		if so != serversocket and so != sock:
-			try: so.send(msg);
+			try: so.send(msg); print('Broadcasting, msg: ', msg);
 			except Exception as e:
 				# brocken socket connection
 				so.close();
@@ -61,12 +61,13 @@ def chat_server():
 			else:
 				# discard connection if there no more data
 				try:
-					data = recv(RECV_BUFFER);
+					data = sock.recv(RECV_BUFFER);
 					if data: broadcast(serversocket, sock, "\r["+ str(sock.getpeername())+ '] '+ data)
 					else:
 						if sock in SOCKET_LIST: SOCKET_LIST.remove(sock);
 						broadcast(serversocket, sock, "Client (%s, %s) is offline\n" % address);
 				except Exception as e:
+					print(e);
 					broadcast(serversocket, sock, "Client (%s, %s) is offline\n" % address);
 					continue;
 	serversocket.close();
