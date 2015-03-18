@@ -8,17 +8,17 @@
 
 import sys
 import select
-import time
 import socket
 # from tcpSocket import *
 
 HOPCOUNT = 10;
 SOCKET_LIST = [];			# [socket.socket], list of readable connection
-RECV_BUFFER = 4096
+RECV_BUFFER = 4096;
 HOST = '';
-PORT = 9999;
+PORT = 9009;
 
 def broadcast(serversocket, sock, msg):
+	# print('Broadcasting, msg: ', msg);
 	for so in SOCKET_LIST:
 		# send msg to peer only
 		if so != serversocket and so != sock:
@@ -35,14 +35,14 @@ def chat_server():
 	# serversocket.listen(HOPCOUNT);
 	# SOCKET_LIST.append(serversocket.sock);	# Mark server socket is readable connection
 
-	server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+	serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 	print('Socket created.');
-	server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1);
-	server_socket.bind((HOST, PORT));
+	serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1);
+	serversocket.bind((HOST, PORT));
 	print('Chatting server started on port ', PORT);
-	server_socket.listen(10);
+	serversocket.listen(10);
 	print('Socket listen: ', HOPCOUNT, ' hop');
-	SOCKET_LIST.append(server_socket)
+	SOCKET_LIST.append(serversocket)
 
 	while True:
 		# Get the list sockets which are ready to be read thruogh select
@@ -59,31 +59,17 @@ def chat_server():
 
 			# a message from client, not new connection
 			else:
+				# discard connection if there no more data
 				try:
-					# receiving data from the socket
 					data = recv(RECV_BUFFER);
 					if data: broadcast(serversocket, sock, "\r["+ str(sock.getpeername())+ '] '+ data)
 					else:
-						# remove borcken socket
 						if sock in SOCKET_LIST: SOCKET_LIST.remove(sock);
-						# no data, means probably the connection has been brocken
 						broadcast(serversocket, sock, "Client (%s, %s) is offline\n" % address);
 				except Exception as e:
 					broadcast(serversocket, sock, "Client (%s, %s) is offline\n" % address);
 					continue;
 	serversocket.close();
-
-	# while True:
-	# 	# socket.accept() return pair value (connection, addr) to address
-	# 	clientsocket, address = serversocket.sock.accept();
-	# 	print('Got a connection from ', str(address));
-	# 	print(clientsocket)
-
-	# 	currentTime = time.ctime(time.time()) + "\r\n";
-	# 	clientsocket.send(currentTime.encode('ascii'));
-	# 	clientsocket.close();
-	# 	print('Socket close');
-	# 	break;
 
 if __name__ == '__main__':
 	sys.exit(chat_server());
