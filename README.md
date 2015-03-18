@@ -1,5 +1,5 @@
-# simpleRTP
-implement reliable transprot protocol in python3
+# Chat room
+implement multiple client and non-blocking chat room
 
 ## step 1: simply transfer current time once from server to client (done)
 * Blocking
@@ -11,4 +11,5 @@ implement reliable transprot protocol in python3
 * Non-blocking
 * Multiple client
 * Close connection until no more readable connection
-* Both server and client can send/ receive data
+* Server only handle broadcast and connection
+> BUG: when another client try to connect to server, the first client will disconnect
