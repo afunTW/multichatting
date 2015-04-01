@@ -18,7 +18,7 @@ HOST = '';
 PORT = 9009;
 
 def broadcast(serversocket, sock, msg):
-	print(SOCKET_LIST);
+	# print(SOCKET_LIST);
 	for so in SOCKET_LIST:
 		# send msg to peer only
 		if so != serversocket and so != sock:
