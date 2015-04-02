@@ -9,7 +9,6 @@
 import sys
 import select
 import socket
-# from tcpSocket import *
 
 HOPCOUNT = 10;
 SOCKET_LIST = [];			# [socket.socket], list of readable connection

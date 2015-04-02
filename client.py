@@ -3,7 +3,6 @@
 import sys
 import select
 import socket
-# from tcpSocket import *
 
 RECV_BUFFER = 4096
 
