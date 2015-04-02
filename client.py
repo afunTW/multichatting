@@ -7,13 +7,6 @@ import socket
 
 RECV_BUFFER = 4096
 
-# serversocket = tcpSocket();
-# serversocket.connect(HOST, PORT);
-# tm = serversocket.sock.recv(2048); # receive no more than 2048 bytes
-# print('The time got from the server is ', tm.decode('ascii'));
-# serversocket.sock.close();
-# print('Socket close');
-
 def chat_client():
 	if len(sys.argv) < 3:
 		print('usage: server.py, hostname, port')
@@ -40,18 +33,19 @@ def chat_client():
 		for sock in ready_to_read:
 			if sock == s:
 				# incoming data from remote server
-				data = sock.recv(RECV_BUFFER);
+				data = sock.recv(RECV_BUFFER).decode('utf-8');
 				if not data: print('\nDisconnect from chat server'); sys.exit();
 				else:
 					#print data
-					sys.stdout.write(data);
-					sys.stdout.write('[Me] '); sys.stdout.flush();
+					sys.stdout.write(str(data));
+					sys.stdout.flush();
+					print()
 
 			else:
 				# user enter the msg
 				msg = sys.stdin.readline();
 				s.send(bytes(msg, 'utf-8'));
-				sys.stdout.write('[Me] '); sys.stdout.flush();
+				sys.stdout.flush();
 
 if __name__ == '__main__':
 	sys.exit(chat_client());

@@ -3,7 +3,7 @@
 """
 	1. If the master socket is readable, the server would accept the new connection.
   2. If any of the client socket is readable, the server would read the message,
-     and broadcast it back to all clients except the one who send the message.
+	 and broadcast it back to all clients except the one who send the message.
 """
 
 import sys
@@ -18,23 +18,17 @@ HOST = '';
 PORT = 9009;
 
 def broadcast(serversocket, sock, msg):
-	# print(SOCKET_LIST);
 	for so in SOCKET_LIST:
 		# send msg to peer only
 		if so != serversocket and so != sock:
-			try: so.send(msg); print('Broadcasting, msg: ', msg);
+			try: so.send(bytes(msg, 'utf-8')); print('Broadcasting, msg: ', msg);
 			except Exception as e:
 				# brocken socket connection
+				print("Broadcast error: ", e)
 				so.close();
 				if so in SOCKET_LIST: SOCKET_LIST.remove(so);
 
 def chat_server():
-
-	# serversocket = tcpSocket();
-	# serversocket.bind(HOST, PORT);
-	# serversocket.listen(HOPCOUNT);
-	# SOCKET_LIST.append(serversocket.sock);	# Mark server socket is readable connection
-
 	serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 	print('Socket created.');
 	serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1);
@@ -61,7 +55,8 @@ def chat_server():
 			else:
 				# discard connection if there no more data
 				try:
-					data = sock.recv(RECV_BUFFER);
+					data = sock.recv(RECV_BUFFER).decode('utf-8');
+					# print("Receive data: ", data)
 					if data: broadcast(serversocket, sock, "\r["+ str(sock.getpeername())+ '] '+ data)
 					else:
 						if sock in SOCKET_LIST: SOCKET_LIST.remove(sock);
